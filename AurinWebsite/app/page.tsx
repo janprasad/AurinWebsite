@@ -120,6 +120,13 @@ function Dashboard() {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
 
+  // Rich project context
+  const [currentSprint, setCurrentSprint] = useState("");
+  const [sprintGoal, setSprintGoal] = useState("");
+  const [phase, setPhase] = useState("planning");
+  const [currentMilestone, setCurrentMilestone] = useState("");
+  const [technicalContext, setTechnicalContext] = useState("");
+  
   const [createAgent, setCreateAgent] = useState(true);
   const [agentName, setAgentName] = useState("");
   const [sharedEmails, setSharedEmails] = useState("");

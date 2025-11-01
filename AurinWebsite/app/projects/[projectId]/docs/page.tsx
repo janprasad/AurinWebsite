@@ -56,12 +56,12 @@ export default function DocumentationPage() {
       <div className="mx-auto max-w-7xl px-6 py-12">
         {/* Header */}
         <div className="mb-8">
-          <Link
-            href={`/projects/${projectId}`}
+      <Link
+        href={`/projects/${projectId}`}
             className="inline-flex items-center text-[color:var(--color-slate)] hover:text-[color:var(--color-ink)] transition-colors text-sm mb-4"
-          >
-            ← Back to Project
-          </Link>
+      >
+        ← Back to Project
+      </Link>
           <h1 
             className="text-4xl font-semibold text-[color:var(--color-ink)] mb-3"
             style={{ fontFamily: 'var(--font-display)' }}
@@ -73,62 +73,62 @@ export default function DocumentationPage() {
           </p>
         </div>
 
-        {/* Search Section */}
+      {/* Search Section */}
         <div className="mb-10">
           <div className="rounded-2xl border border-[color:var(--color-tea)] bg-white/80 backdrop-blur p-6 shadow-sm">
             <div className="flex gap-3">
-              <input
-                type="text"
+          <input
+            type="text"
                 placeholder="Search documentation semantically..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 className="flex-1 px-4 py-3 rounded-full border border-[color:var(--color-tea)] bg-white focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)] transition-all"
-              />
-              <button
-                onClick={handleSearch}
-                disabled={isSearching}
+          />
+          <button
+            onClick={handleSearch}
+            disabled={isSearching}
                 className="inline-flex items-center rounded-full bg-[var(--color-primary)] text-white px-6 py-3 text-sm font-medium shadow-sm hover:brightness-95 disabled:opacity-60 transition-all"
-              >
-                {isSearching ? "Searching..." : "Search"}
-              </button>
-              {searchQuery && (
-                <button
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSearchResults([]);
-                  }}
+          >
+            {isSearching ? "Searching..." : "Search"}
+          </button>
+          {searchQuery && (
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setSearchResults([]);
+              }}
                   className="inline-flex items-center rounded-full bg-white text-[var(--color-ink)] ring-1 ring-inset ring-[color:var(--color-tea)] px-5 py-3 text-sm font-medium hover:bg-[var(--color-stone)]/60 transition-all"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-            {searchQuery && searchResults.length > 0 && (
+            >
+              Clear
+            </button>
+          )}
+        </div>
+        {searchQuery && searchResults.length > 0 && (
               <p className="text-sm text-[color:var(--color-slate)] mt-3">
                 Found {searchResults.length} relevant document{searchResults.length !== 1 ? "s" : ""}
-              </p>
-            )}
+          </p>
+        )}
           </div>
-        </div>
+      </div>
 
         {/* Documentation Grid */}
-        {displayDocs.length === 0 ? (
+      {displayDocs.length === 0 ? (
           <div className="rounded-2xl border border-[color:var(--color-tea)] bg-white/80 backdrop-blur p-12 text-center shadow-sm">
             <div className="max-w-md mx-auto">
               <svg className="w-16 h-16 mx-auto mb-4 text-[color:var(--color-mist)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               <p className="text-[color:var(--color-slate)] text-lg">
-                {searchQuery
-                  ? "No results found. Try a different search query."
-                  : "No documentation yet. Meeting docs will appear here after meetings are completed."}
-              </p>
+            {searchQuery
+              ? "No results found. Try a different search query."
+              : "No documentation yet. Meeting docs will appear here after meetings are completed."}
+          </p>
             </div>
-          </div>
-        ) : (
+        </div>
+      ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayDocs.map((doc) => (
+          {displayDocs.map((doc) => (
               <button
                 key={doc._id}
                 onClick={() => setSelectedDoc(doc)}
@@ -252,8 +252,8 @@ export default function DocumentationPage() {
                       </h3>
                       <p className="text-[color:var(--color-slate)] text-sm">
                         {cleanSummary}
-                      </p>
-                    </div>
+                </p>
+              </div>
                   ) : null;
                 })()}
 
@@ -267,11 +267,11 @@ export default function DocumentationPage() {
                         <li key={i} className="flex items-start gap-3">
                           <span className="flex-shrink-0 w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] mt-2" />
                           <span className="text-[color:var(--color-slate)] text-sm">{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
                 {selectedDoc.actionItems && selectedDoc.actionItems.length > 0 && (
                   <div className="not-prose mb-6">
@@ -289,8 +289,8 @@ export default function DocumentationPage() {
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
+                          </div>
+                        )}
 
                 <div className="not-prose mb-4">
                   <h3 className="text-base font-semibold text-[color:var(--color-ink)] mb-3" style={{ fontFamily: 'var(--font-display)' }}>
@@ -305,8 +305,8 @@ export default function DocumentationPage() {
                 </div>
               </div>
             </div>
-          </div>
-        )}
+        </div>
+      )}
       </div>
 
       <style jsx global>{`

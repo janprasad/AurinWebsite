@@ -148,43 +148,43 @@ export default function BotPage() {
       <div className="mx-auto max-w-5xl px-6 py-12">
         {/* Header */}
         <div className="mb-10">
-          <Link
-            href={`/projects/${bot.projectId}`}
+      <Link
+        href={`/projects/${bot.projectId}`}
             className="inline-flex items-center text-[color:var(--color-slate)] hover:text-[color:var(--color-ink)] transition-colors text-sm mb-4"
-          >
-            ← Back to Project
-          </Link>
-          
+      >
+        ← Back to Project
+      </Link>
+
           <div className="rounded-2xl border border-[color:var(--color-tea)] bg-white/80 backdrop-blur p-8 shadow-sm">
-            {isEditing ? (
+          {isEditing ? (
               <div className="space-y-4">
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                   className="w-full text-4xl font-semibold px-4 py-3 rounded-xl border border-[color:var(--color-tea)] bg-white focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)] transition-all"
                   style={{fontFamily:'var(--font-display)'}}
-                />
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+              />
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                   placeholder="Add a description..."
                   className="w-full px-4 py-3 rounded-xl border border-[color:var(--color-tea)] bg-white focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)] transition-all resize-none"
-                  rows={3}
-                />
+                rows={3}
+              />
                 <div className="flex gap-3">
-                  <button
-                    onClick={handleUpdate}
+                <button
+                  onClick={handleUpdate}
                     className="inline-flex items-center rounded-full bg-[var(--color-primary)] text-white px-6 py-2.5 text-sm font-medium shadow-sm hover:brightness-95 transition-all"
-                  >
+                >
                     Save Changes
-                  </button>
-                  <button
-                    onClick={() => setIsEditing(false)}
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
                     className="inline-flex items-center rounded-full bg-white text-[var(--color-ink)] ring-1 ring-inset ring-[color:var(--color-tea)] px-6 py-2.5 text-sm font-medium hover:bg-[var(--color-stone)]/60 transition-all"
-                  >
-                    Cancel
-                  </button>
+                >
+                  Cancel
+                </button>
                 </div>
               </div>
             ) : (
@@ -208,24 +208,24 @@ export default function BotPage() {
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => setIsEditing(true)}
+                <button
+                  onClick={() => setIsEditing(true)}
                     className="inline-flex items-center rounded-full bg-white text-[var(--color-ink)] ring-1 ring-inset ring-[color:var(--color-tea)] px-5 py-2.5 text-sm font-medium hover:bg-[var(--color-stone)]/60 transition-all"
-                  >
+                >
                     <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                    Edit
-                  </button>
-                  <button
-                    onClick={handleDelete}
+                  Edit
+                </button>
+                <button
+                  onClick={handleDelete}
                     className="inline-flex items-center rounded-full bg-red-50 text-red-600 ring-1 ring-inset ring-red-200 px-5 py-2.5 text-sm font-medium hover:bg-red-100 transition-all"
-                  >
+                >
                     <svg className="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                    Delete
-                  </button>
+                  Delete
+                </button>
                 </div>
               </div>
             )}
@@ -281,8 +281,8 @@ export default function BotPage() {
                   className="w-full px-4 py-3 rounded-xl border border-[color:var(--color-tea)] bg-white focus:outline-none focus:ring-2 focus:ring-[color:var(--color-primary)] transition-all"
                   disabled={botStatus === "running" || isStarting}
                 />
-              </div>
-              
+      </div>
+
               <div className="flex gap-3">
                 <button
                   onClick={handleStartBot}
@@ -338,23 +338,23 @@ export default function BotPage() {
             Meeting History
           </h2>
           
-          {botMeetings.length === 0 ? (
+        {botMeetings.length === 0 ? (
             <div className="rounded-2xl border border-[color:var(--color-tea)] bg-white/80 backdrop-blur p-8 text-center shadow-sm">
               <svg className="w-12 h-12 mx-auto mb-3 text-[color:var(--color-mist)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <p className="text-[color:var(--color-slate)]">
                 No meetings yet. Start the bot to join a meeting!
-              </p>
+          </p>
             </div>
-          ) : (
+        ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {botMeetings.map((meeting) => (
-                <Link
-                  key={meeting._id}
-                  href={`/meetings/${meeting._id}`}
+            {botMeetings.map((meeting) => (
+              <Link
+                key={meeting._id}
+                href={`/meetings/${meeting._id}`}
                   className="group rounded-2xl border border-[color:var(--color-tea)] bg-white/80 backdrop-blur p-5 shadow-sm hover:shadow-md transition-all hover:scale-[1.02]"
-                >
+              >
                   <div className="flex items-start justify-between mb-2">
                     <h3 className="font-semibold text-[color:var(--color-ink)] group-hover:text-[color:var(--color-primary)] transition-colors">
                       {meeting.name}
@@ -379,10 +379,10 @@ export default function BotPage() {
                       })}
                     </p>
                   )}
-                </Link>
-              ))}
-            </div>
-          )}
+              </Link>
+            ))}
+          </div>
+        )}
         </div>
       </div>
     </div>

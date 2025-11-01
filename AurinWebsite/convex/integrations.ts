@@ -249,3 +249,44 @@ export const remove = mutation({
   },
 });
 
+/**
+ * Internal query to get integrations for a specific user (for agent API)
+ * Bypasses auth check since it's called from authenticated HTTP actions
+ */
+export const getForUser = query({
+  args: {
+    userId: v.string(),
+    provider: v.optional(v.union(v.literal("hyperspell"), v.literal("recall"), v.literal("moss"))),
+  },
+  returns: v.array(
+    v.object({
+      _id: v.id("integrations"),
+      _creationTime: v.number(),
+      userId: v.string(),
+      provider: v.union(v.literal("hyperspell"), v.literal("recall"), v.literal("moss")),
+      accessToken: v.string(),
+      refreshToken: v.optional(v.string()),
+      expiresAt: v.optional(v.number()),
+      metadata: v.optional(
+        v.object({
+          accountId: v.optional(v.string()),
+          accountName: v.optional(v.string()),
+        })
+      ),
+    })
+  ),
+  handler: async (ctx, args) => {
+    // No auth check - this is for internal/agent use
+    let query = ctx.db.query("integrations").withIndex("by_user", (q) => q.eq("userId", args.userId));
+    
+    const results = await query.collect();
+    
+    // Filter by provider if specified
+    if (args.provider) {
+      return results.filter(r => r.provider === args.provider);
+    }
+    
+    return results;
+  },
+});
+

@@ -56,6 +56,39 @@ export const create = mutation({
   args: {
     name: v.string(),
     description: v.optional(v.string()),
+    context: v.optional(
+      v.object({
+        currentSprint: v.optional(v.string()),
+        sprintGoal: v.optional(v.string()),
+        phase: v.optional(v.string()),
+        roadmap: v.optional(
+          v.object({
+            currentMilestone: v.optional(v.string()),
+            completedMilestones: v.optional(v.array(v.string())),
+            upcomingMilestones: v.optional(v.array(v.string())),
+            priorities: v.optional(v.array(v.string())),
+          })
+        ),
+        team: v.optional(
+          v.object({
+            members: v.optional(
+              v.array(
+                v.object({
+                  name: v.string(),
+                  role: v.optional(v.string()),
+                  email: v.optional(v.string()),
+                })
+              )
+            ),
+            pmName: v.optional(v.string()),
+            pmEmail: v.optional(v.string()),
+          })
+        ),
+        recentDecisions: v.optional(v.array(v.string())),
+        knownRisks: v.optional(v.array(v.string())),
+        technicalContext: v.optional(v.string()),
+      })
+    ),
   },
   returns: v.id("projects"),
   handler: async (ctx, args) => {
@@ -66,6 +99,7 @@ export const create = mutation({
     return await ctx.db.insert("projects", {
       name: args.name,
       description: args.description,
+      context: args.context,
       ownerId: identity.subject,
     });
   },
@@ -125,6 +159,39 @@ export const getProjectForAgent = internalQuery({
       name: v.string(),
       description: v.optional(v.string()),
       ownerId: v.string(),
+      context: v.optional(
+        v.object({
+          currentSprint: v.optional(v.string()),
+          sprintGoal: v.optional(v.string()),
+          phase: v.optional(v.string()),
+          roadmap: v.optional(
+            v.object({
+              currentMilestone: v.optional(v.string()),
+              completedMilestones: v.optional(v.array(v.string())),
+              upcomingMilestones: v.optional(v.array(v.string())),
+              priorities: v.optional(v.array(v.string())),
+            })
+          ),
+          team: v.optional(
+            v.object({
+              members: v.optional(
+                v.array(
+                  v.object({
+                    name: v.string(),
+                    role: v.optional(v.string()),
+                    email: v.optional(v.string()),
+                  })
+                )
+              ),
+              pmName: v.optional(v.string()),
+              pmEmail: v.optional(v.string()),
+            })
+          ),
+          recentDecisions: v.optional(v.array(v.string())),
+          knownRisks: v.optional(v.array(v.string())),
+          technicalContext: v.optional(v.string()),
+        })
+      ),
     }),
     v.null()
   ),

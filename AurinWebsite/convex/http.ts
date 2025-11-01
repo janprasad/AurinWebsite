@@ -89,6 +89,59 @@ http.route({
         });
       }
 
+      // Fetch owner's Hyperspell integration (if any)
+      let hyperspellToken = null;
+      try {
+        const integrations = await ctx.runQuery(api.integrations.getForUser, {
+          userId: project.ownerId,
+          provider: "hyperspell",
+        });
+        
+        if (integrations && integrations.length > 0) {
+          const integration = integrations[0];
+          // Check if token is expired
+          if (!integration.expiresAt || integration.expiresAt > Date.now()) {
+            hyperspellToken = integration.accessToken;
+          }
+        }
+      } catch (error) {
+        console.warn(`Could not fetch Hyperspell integration for user ${project.ownerId}:`, error);
+      }
+
+      // Fetch recent meeting summaries (last 3 meetings)
+      let recentMeetings: any[] = [];
+      try {
+        const allMeetings = await ctx.runQuery(api.meetings.list, {
+          projectId: bot.projectId,
+        });
+        
+        // Get completed meetings only, sorted by most recent
+        const completedMeetings = allMeetings
+          .filter(m => m.status === "completed")
+          .sort((a, b) => (b.scheduledTime || b._creationTime) - (a.scheduledTime || a._creationTime))
+          .slice(0, 3);
+        
+        // Fetch documentation for each meeting
+        for (const meeting of completedMeetings) {
+          const docs = await ctx.runQuery(api.documentation.list, {
+            projectId: bot.projectId,
+          });
+          const meetingDoc = docs.find(d => d.meetingId === meeting._id);
+          
+          if (meetingDoc) {
+            recentMeetings.push({
+              id: meeting._id,
+              name: meeting.name,
+              date: meeting.scheduledTime || meeting._creationTime,
+              summary: meetingDoc.summary,
+              keyPoints: meetingDoc.keyPoints,
+            });
+          }
+        }
+      } catch (error) {
+        console.warn("Could not fetch recent meetings:", error);
+      }
+
       return new Response(
         JSON.stringify({
           bot: {
@@ -102,7 +155,10 @@ http.route({
             name: project.name,
             description: project.description,
             ownerId: project.ownerId,
+            context: project.context || {},
           },
+          hyperspellToken,
+          recentMeetings,
         }),
         {
           status: 200,

@@ -136,28 +136,28 @@ export const create = mutation({
  */
 export const createForAgent = internalMutation({
   args: {
-    meetingId: v.id("meetings"),
-    projectId: v.id("projects"),
-    content: v.string(),
+      meetingId: v.id("meetings"),
+      projectId: v.id("projects"),
+      content: v.string(),
     embedding: v.array(v.float64()),
-    summary: v.optional(v.string()),
-    keyPoints: v.optional(v.array(v.string())),
-    actionItems: v.optional(
-      v.array(
-        v.object({
-          item: v.string(),
-          assignee: v.optional(v.string()),
-          dueDate: v.optional(v.number()),
-        })
-      )
-    ),
-    ownerId: v.string(),
+      summary: v.optional(v.string()),
+      keyPoints: v.optional(v.array(v.string())),
+      actionItems: v.optional(
+        v.array(
+          v.object({
+            item: v.string(),
+            assignee: v.optional(v.string()),
+            dueDate: v.optional(v.number()),
+          })
+        )
+      ),
+      ownerId: v.string(),
   },
   returns: v.id("meetingDocumentation"),
   handler: async (ctx, args) => {
     return await ctx.db.insert("meetingDocumentation", {
       meetingId: args.meetingId,
-      projectId: args.projectId,
+        projectId: args.projectId,
       content: args.content,
       embedding: args.embedding,
       summary: args.summary,
