@@ -1,40 +1,13 @@
 "use client";
 
-import { useQuery, useMutation, useAction } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Link from "next/link";
-import { useState } from "react";
+import { HyperspellConnect } from "@/components/HyperspellConnect";
 
 export default function IntegrationsPage() {
   const integrations = useQuery(api.integrations.list) ?? [];
-  const connectIntegration = useAction(api.integrations.connect);
   const removeIntegration = useMutation(api.integrations.remove);
-  const [connecting, setConnecting] = useState<string | null>(null);
-  const [hyperspellToken, setHyperspellToken] = useState("");
-  const [mossToken, setMossToken] = useState("");
-  const [recallToken, setRecallToken] = useState("");
-
-  const handleConnect = async (
-    provider: "hyperspell" | "recall" | "moss",
-    token: string
-  ) => {
-    if (!token.trim()) {
-      alert("Please enter an access token");
-      return;
-    }
-    setConnecting(provider);
-    try {
-      await connectIntegration({ provider, code: token });
-      if (provider === "hyperspell") setHyperspellToken("");
-      if (provider === "moss") setMossToken("");
-      if (provider === "recall") setRecallToken("");
-      alert(`${provider} connected successfully!`);
-    } catch (error) {
-      alert(`Failed to connect ${provider}: ${error}`);
-    } finally {
-      setConnecting(null);
-    }
-  };
 
   const handleDisconnect = async (integrationId: string) => {
     if (!confirm("Are you sure you want to disconnect this integration?")) return;
@@ -42,8 +15,6 @@ export default function IntegrationsPage() {
   };
 
   const hyperspellIntegration = integrations.find((i) => i.provider === "hyperspell");
-  const mossIntegration = integrations.find((i) => i.provider === "moss");
-  const recallIntegration = integrations.find((i) => i.provider === "recall");
 
   return (
     <div className="max-w-4xl mx-auto p-8">
@@ -55,132 +26,51 @@ export default function IntegrationsPage() {
 
       <div className="space-y-6">
         {/* Hyperspell Integration */}
-        <div className="bg-white p-6 rounded-lg border border-slate-200">
+        <div className="bg-white p-6 rounded-lg border border-[color:var(--color-stone)] shadow-sm">
           <div className="flex justify-between items-start mb-4">
-            <div>
-              <h2 className="text-2xl font-semibold mb-2">Hyperspell</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Connect your Hyperspell account to enable integrations with meeting
-                platforms.
+            <div className="flex-1">
+              <h2 className="text-2xl font-display font-semibold text-[var(--color-ink)] mb-2">Hyperspell</h2>
+              <p className="text-[var(--color-ink)]/70 text-sm leading-relaxed mb-4">
+                Connect your accounts (Slack, Gmail, Google Calendar, etc.) through Hyperspell 
+                to enable seamless integration with meeting platforms and automatically sync meeting data.
               </p>
+              {!hyperspellIntegration && (
+                <div className="bg-[var(--color-stone)]/30 p-4 rounded-lg text-sm text-[var(--color-ink)]/80 mb-4">
+                  <p className="font-medium mb-2">What you can connect:</p>
+                  <ul className="list-disc list-inside space-y-1 ml-2">
+                    <li>Slack - for meeting notifications and summaries</li>
+                    <li>Gmail - for email-based meeting invites</li>
+                    <li>Google Calendar - for automatic meeting scheduling</li>
+                    <li>And more...</li>
+                  </ul>
+                </div>
+              )}
             </div>
-            {hyperspellIntegration ? (
-              <div className="flex items-center gap-4">
-                <span className="text-green-600 dark:text-green-400 font-semibold">
-                  Connected
-                </span>
-                <button
-                  onClick={() => handleDisconnect(hyperspellIntegration._id)}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
-                >
-                  Disconnect
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  placeholder="Access Token"
-                  value={hyperspellToken}
-                  onChange={(e) => setHyperspellToken(e.target.value)}
-                  className="px-4 py-2 border rounded-md bg-white border-slate-300"
-                  disabled={connecting !== null}
+            <div className="ml-6">
+              {hyperspellIntegration ? (
+                <div className="flex flex-col items-end gap-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-green-600 font-semibold">Connected</span>
+                  </div>
+                  <button
+                    onClick={() => handleDisconnect(hyperspellIntegration._id)}
+                    className="bg-red-600 text-white px-4 py-2 rounded-full text-sm hover:bg-red-700 transition-colors"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              ) : (
+                <HyperspellConnect
+                  onSuccess={() => {
+                    alert("Hyperspell connected successfully! Your account connections are now active.");
+                  }}
+                  onError={(error) => {
+                    console.error("Hyperspell connection error:", error);
+                  }}
                 />
-                <button
-                  onClick={() => handleConnect("hyperspell", hyperspellToken)}
-                  disabled={connecting !== null}
-                  className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-full hover:brightness-95 transition-colors disabled:opacity-50"
-                >
-                  {connecting === "hyperspell" ? "Connecting..." : "Connect"}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Moss Integration */}
-        <div className="bg-white p-6 rounded-lg border border-slate-200">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h2 className="text-2xl font-semibold mb-2">Moss</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Connect Moss for semantic search across your meeting documentation.
-              </p>
+              )}
             </div>
-            {mossIntegration ? (
-              <div className="flex items-center gap-4">
-                <span className="text-green-600 dark:text-green-400 font-semibold">
-                  Connected
-                </span>
-                <button
-                  onClick={() => handleDisconnect(mossIntegration._id)}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
-                >
-                  Disconnect
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  placeholder="Access Token"
-                  value={mossToken}
-                  onChange={(e) => setMossToken(e.target.value)}
-                  className="px-4 py-2 border rounded-md bg-white border-slate-300"
-                  disabled={connecting !== null}
-                />
-                <button
-                  onClick={() => handleConnect("moss", mossToken)}
-                  disabled={connecting !== null}
-                  className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-full hover:brightness-95 transition-colors disabled:opacity-50"
-                >
-                  {connecting === "moss" ? "Connecting..." : "Connect"}
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Recall Integration */}
-        <div className="bg-white p-6 rounded-lg border border-slate-200">
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h2 className="text-2xl font-semibold mb-2">Recall</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Connect Recall API to enable bot creation and meeting management.
-              </p>
-            </div>
-            {recallIntegration ? (
-              <div className="flex items-center gap-4">
-                <span className="text-green-600 dark:text-green-400 font-semibold">
-                  Connected
-                </span>
-                <button
-                  onClick={() => handleDisconnect(recallIntegration._id)}
-                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
-                >
-                  Disconnect
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <input
-                  type="text"
-                  placeholder="Access Token"
-                  value={recallToken}
-                  onChange={(e) => setRecallToken(e.target.value)}
-                  className="px-4 py-2 border rounded-md bg-white border-slate-300"
-                  disabled={connecting !== null}
-                />
-                <button
-                  onClick={() => handleConnect("recall", recallToken)}
-                  disabled={connecting !== null}
-                  className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-full hover:brightness-95 transition-colors disabled:opacity-50"
-                >
-                  {connecting === "recall" ? "Connecting..." : "Connect"}
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>

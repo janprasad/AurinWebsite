@@ -15,14 +15,11 @@ export default function Header() {
           <Link href="/" className="font-semibold text-[var(--color-ink)]">
             Recall PM
           </Link>
-          {!isHome && (
+          <SignedIn>
             <nav className="hidden md:flex items-center gap-5 text-sm text-[var(--color-ink)]/80">
-              <Link href="/projects" className="hover:text-[var(--color-ink)]">Projects</Link>
-              <Link href="/bots" className="hover:text-[var(--color-ink)]">Bots</Link>
-              <Link href="/meetings" className="hover:text-[var(--color-ink)]">Meetings</Link>
               <Link href="/integrations" className="hover:text-[var(--color-ink)]">Integrations</Link>
             </nav>
-          )}
+          </SignedIn>
         </div>
         <div className="flex items-center gap-3">
           <SignedIn>
