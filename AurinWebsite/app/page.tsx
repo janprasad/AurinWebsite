@@ -8,61 +8,74 @@ import {
 } from "convex/react";
 import { api } from "../convex/_generated/api";
 import Link from "next/link";
-import { SignUpButton, SignInButton, UserButton } from "@clerk/nextjs";
+import { SignUpButton, SignInButton } from "@clerk/nextjs";
 import { useState } from "react";
 
 export default function Home() {
   return (
     <>
-      <header className="sticky top-0 z-10 bg-background p-4 border-b-2 border-slate-200 dark:border-slate-800 flex flex-row justify-between items-center">
-        <Link href="/" className="text-xl font-bold">
-          Project Manager Voice Agent
-        </Link>
-        <div className="flex items-center gap-4">
-          <Authenticated>
-            <nav className="flex gap-4">
-              <Link href="/projects" className="hover:underline">Projects</Link>
-              <Link href="/bots" className="hover:underline">Bots</Link>
-              <Link href="/meetings" className="hover:underline">Meetings</Link>
-              <Link href="/integrations" className="hover:underline">Integrations</Link>
-            </nav>
-          </Authenticated>
-        <UserButton />
-        </div>
-      </header>
-      <main className="p-8">
         <Authenticated>
-          <Dashboard />
+        <Dashboard />
         </Authenticated>
         <Unauthenticated>
-          <SignInForm />
+        <Landing />
         </Unauthenticated>
-      </main>
     </>
   );
 }
 
-function SignInForm() {
+function Landing() {
   return (
-    <div className="flex flex-col gap-8 w-96 mx-auto items-center justify-center min-h-[60vh]">
-      <h1 className="text-4xl font-bold text-center">
-        Project Manager Voice Agent
-      </h1>
-      <p className="text-center text-gray-600 dark:text-gray-400">
-        Manage your standups and meetings with AI-powered bots
-      </p>
-      <div className="flex flex-col gap-4 w-full">
+    <section className="py-16 sm:py-24">
+      <div className="mx-auto max-w-3xl text-center">
+        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-slate-900">
+          Run better standups and meetings with an AI project manager
+        </h1>
+        <p className="mt-4 text-lg text-slate-600">
+          Create Recall bots, assign them to meetings, and search your meeting docs
+          semantically. All powered by Convex, Next.js, and Clerk.
+        </p>
+        <div className="mt-8 flex items-center justify-center gap-3">
       <SignInButton mode="modal">
-          <button className="bg-foreground text-background px-6 py-3 rounded-md font-semibold hover:opacity-90 transition-opacity w-full">
-          Sign in
+            <button className="inline-flex items-center rounded-md bg-slate-900 text-white px-5 py-3 text-sm font-medium shadow-sm hover:bg-slate-800">
+              Get started
         </button>
       </SignInButton>
       <SignUpButton mode="modal">
-          <button className="bg-slate-200 dark:bg-slate-800 text-foreground px-6 py-3 rounded-md font-semibold hover:opacity-90 transition-opacity w-full">
-          Sign up
+            <button className="inline-flex items-center rounded-md bg-white text-slate-900 ring-1 ring-inset ring-slate-200 px-5 py-3 text-sm font-medium hover:bg-slate-50">
+              Create account
         </button>
       </SignUpButton>
     </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl mt-16 grid gap-6 sm:grid-cols-2">
+        <FeatureCard
+          title="Recall bots"
+          description="Spin up project bots and assign them to recurring or ad-hoc meetings."
+        />
+        <FeatureCard
+          title="Integrations"
+          description="Connect Hyperspell and more to sync your meeting platforms."
+        />
+        <FeatureCard
+          title="Docs & search"
+          description="All meeting notes are saved to Convex with semantic search via Moss."
+        />
+        <FeatureCard
+          title="Secure by default"
+          description="Auth with Clerk and per-user scoping for projects, bots, and meetings."
+        />
+      </div>
+    </section>
+  );
+}
+
+function FeatureCard({ title, description }: { title: string; description: string }) {
+    return (
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow transition-shadow">
+      <h3 className="text-base font-semibold text-slate-900">{title}</h3>
+      <p className="mt-1 text-sm text-slate-600">{description}</p>
       </div>
     );
   }
@@ -88,36 +101,36 @@ function Dashboard() {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">Dashboard</h1>
+        <h1 className="text-3xl font-semibold">Dashboard</h1>
         <button
           onClick={() => setShowCreateForm(!showCreateForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          className="bg-slate-900 text-white px-4 py-2 rounded-md hover:bg-slate-800 transition-colors"
         >
           {showCreateForm ? "Cancel" : "+ New Project"}
         </button>
           </div>
 
       {showCreateForm && (
-        <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-lg mb-8">
-          <h2 className="text-xl font-semibold mb-4">Create New Project</h2>
+        <div className="bg-white border border-slate-200 p-6 rounded-lg mb-8">
+          <h2 className="text-lg font-semibold mb-4">Create New Project</h2>
           <div className="flex flex-col gap-4">
             <input
               type="text"
               placeholder="Project name"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
-              className="px-4 py-2 border rounded-md dark:bg-slate-700 dark:border-slate-600"
+              className="px-4 py-2 border rounded-md bg-white border-slate-300"
             />
             <textarea
               placeholder="Description (optional)"
               value={projectDescription}
               onChange={(e) => setProjectDescription(e.target.value)}
-              className="px-4 py-2 border rounded-md dark:bg-slate-700 dark:border-slate-600"
+              className="px-4 py-2 border rounded-md bg-white border-slate-300"
               rows={3}
             />
             <button
               onClick={handleCreateProject}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+              className="bg-slate-900 text-white px-4 py-2 rounded-md hover:bg-slate-800 transition-colors"
             >
               Create Project
             </button>
@@ -126,8 +139,8 @@ function Dashboard() {
       )}
 
       {projects.length === 0 ? (
-        <div className="text-center py-12 bg-slate-100 dark:bg-slate-800 rounded-lg">
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+        <div className="text-center py-12 bg-white border border-slate-200 rounded-lg">
+          <p className="text-slate-600 mb-4">
             No projects yet. Create your first project to get started!
           </p>
       </div>
@@ -137,15 +150,15 @@ function Dashboard() {
             <Link
               key={project._id}
               href={`/projects/${project._id}`}
-              className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700 hover:shadow-lg transition-shadow"
+              className="bg-white p-6 rounded-lg border border-slate-200 hover:shadow-md transition-shadow"
             >
-              <h3 className="text-xl font-semibold mb-2">{project.name}</h3>
+              <h3 className="text-lg font-semibold mb-2">{project.name}</h3>
               {project.description && (
-                <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                <p className="text-slate-600 text-sm mb-4">
                   {project.description}
                 </p>
               )}
-              <p className="text-xs text-gray-500 dark:text-gray-500">
+              <p className="text-xs text-slate-500">
                 Created {new Date(project._creationTime).toLocaleDateString()}
               </p>
             </Link>
