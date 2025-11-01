@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
 export const list = query({
@@ -180,6 +180,49 @@ export const remove = mutation({
     }
     await ctx.db.delete(args.botId);
     return null;
+  },
+});
+
+// Internal function for Python agent to fetch bot configuration
+export const getBotForAgent = internalQuery({
+  args: { botId: v.id("recallBots") },
+  returns: v.union(
+    v.object({
+      _id: v.id("recallBots"),
+      _creationTime: v.number(),
+      name: v.string(),
+      description: v.optional(v.string()),
+      projectId: v.id("projects"),
+      ownerId: v.string(),
+      config: v.optional(
+        v.object({
+          meetingType: v.optional(v.string()),
+          additionalInstructions: v.optional(v.string()),
+          sharedEmails: v.optional(v.array(v.string())),
+          recurring: v.optional(
+            v.object({
+              enabled: v.boolean(),
+              frequency: v.union(v.literal("daily"), v.literal("weekly")),
+              startTime: v.optional(v.number()),
+            })
+          ),
+        })
+      ),
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) => {
+    console.log(`getBotForAgent: Looking up bot with ID: ${args.botId}`);
+    const bot = await ctx.db.get(args.botId);
+    if (!bot) {
+      console.error(`getBotForAgent: Bot not found with ID: ${args.botId}`);
+      // Try to see if there are any bots at all
+      const allBots = await ctx.db.query("recallBots").take(5);
+      console.log(`getBotForAgent: Found ${allBots.length} bots in database (sample IDs: ${allBots.map(b => b._id).join(', ')})`);
+    } else {
+      console.log(`getBotForAgent: Found bot: ${bot.name} (ID: ${bot._id})`);
+    }
+    return bot;
   },
 });
 

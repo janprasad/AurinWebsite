@@ -6,6 +6,40 @@ export default defineSchema({
     name: v.string(),
     description: v.optional(v.string()),
     ownerId: v.string(), // Clerk user ID
+    // Rich project context for AI agent
+    context: v.optional(
+      v.object({
+        currentSprint: v.optional(v.string()),
+        sprintGoal: v.optional(v.string()),
+        phase: v.optional(v.string()), // e.g., "planning", "development", "testing", "launch"
+        roadmap: v.optional(
+          v.object({
+            currentMilestone: v.optional(v.string()),
+            completedMilestones: v.optional(v.array(v.string())),
+            upcomingMilestones: v.optional(v.array(v.string())),
+            priorities: v.optional(v.array(v.string())),
+          })
+        ),
+        team: v.optional(
+          v.object({
+            members: v.optional(
+              v.array(
+                v.object({
+                  name: v.string(),
+                  role: v.optional(v.string()),
+                  email: v.optional(v.string()),
+                })
+              )
+            ),
+            pmName: v.optional(v.string()),
+            pmEmail: v.optional(v.string()),
+          })
+        ),
+        recentDecisions: v.optional(v.array(v.string())),
+        knownRisks: v.optional(v.array(v.string())),
+        technicalContext: v.optional(v.string()), // Tech stack, architecture notes, etc.
+      })
+    ),
   })
     .index("by_owner", ["ownerId"])
     .index("by_owner_and_name", ["ownerId", "name"]),
@@ -66,12 +100,18 @@ export default defineSchema({
         })
       )
     ),
+    embedding: v.array(v.float64()), // Vector embedding for semantic search
     createdAt: v.number(),
     ownerId: v.string(), // Clerk user ID
   })
     .index("by_meeting", ["meetingId"])
     .index("by_project", ["projectId"])
-    .index("by_owner", ["ownerId"]),
+    .index("by_owner", ["ownerId"])
+    .vectorIndex("by_embedding", {
+      vectorField: "embedding",
+      dimensions: 1536, // OpenAI text-embedding-3-small
+      filterFields: ["projectId"], // Multi-tenant filtering
+    }),
 
   integrations: defineTable({
     userId: v.string(), // Clerk user ID

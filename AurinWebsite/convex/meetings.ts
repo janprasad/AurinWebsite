@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
 export const list = query({
@@ -102,6 +102,60 @@ export const create = mutation({
       status: "scheduled",
       ownerId: identity.subject,
     });
+  },
+});
+
+/**
+ * Internal mutation for creating meetings from HTTP actions (agent API)
+ * Bypasses auth check since it's called from authenticated HTTP actions
+ */
+export const createForAgent = internalMutation({
+  args: {
+    name: v.string(),
+    projectId: v.id("projects"),
+    botId: v.id("recallBots"),
+    ownerId: v.string(),
+    scheduledTime: v.optional(v.number()),
+  },
+  returns: v.id("meetings"),
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("meetings", {
+      name: args.name,
+      projectId: args.projectId,
+      botId: args.botId,
+      scheduledTime: args.scheduledTime,
+      status: "scheduled",
+      ownerId: args.ownerId,
+    });
+  },
+});
+
+/**
+ * Internal query for fetching meetings from HTTP actions (agent API)
+ * Bypasses auth check since it's called from authenticated HTTP actions
+ */
+export const getMeetingForAgent = internalQuery({
+  args: { meetingId: v.id("meetings") },
+  returns: v.union(
+    v.object({
+      _id: v.id("meetings"),
+      _creationTime: v.number(),
+      name: v.string(),
+      projectId: v.id("projects"),
+      botId: v.id("recallBots"),
+      scheduledTime: v.optional(v.number()),
+      status: v.union(
+        v.literal("scheduled"),
+        v.literal("in_progress"),
+        v.literal("completed"),
+        v.literal("cancelled")
+      ),
+      ownerId: v.string(),
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.meetingId);
   },
 });
 
