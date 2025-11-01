@@ -258,8 +258,8 @@ http.route({
     }
 
     try {
-      // Verify meeting exists
-      const meeting = await ctx.runQuery(api.meetings.get, {
+      // Verify meeting exists (using internal query to bypass auth)
+      const meeting = await ctx.runQuery(internal.meetings.getMeetingForAgent, {
         meetingId: meetingId as Id<"meetings">,
       });
 
@@ -270,8 +270,8 @@ http.route({
         });
       }
 
-      // Store documentation
-      const docId = await ctx.runMutation(api.documentation.create, {
+      // Store documentation (using internal mutation to bypass auth)
+      const docId = await ctx.runMutation(internal.documentation.createForAgent, {
         meetingId: meetingId as Id<"meetings">,
         projectId: projectId as Id<"projects">,
         content,
@@ -279,6 +279,7 @@ http.route({
         summary,
         keyPoints,
         actionItems,
+        ownerId: meeting.ownerId,
       });
 
       return new Response(

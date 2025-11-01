@@ -84,6 +84,8 @@ export const search = action({
           docId: result._id,
         });
         if (!doc) return null;
+        
+        // api.documentation.get already excludes the embedding field
         return {
           ...doc,
           relevanceScore: result._score,

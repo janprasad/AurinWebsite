@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const list = query({
@@ -34,11 +34,16 @@ export const list = query({
     if (!project || project.ownerId !== identity.subject) {
       throw new Error("Project not found or unauthorized");
     }
-    return await ctx.db
+    
+    // Fetch all docs and exclude the embedding field (too large for frontend)
+    const docs = await ctx.db
       .query("meetingDocumentation")
       .withIndex("by_project", (q) => q.eq("projectId", args.projectId))
       .order("desc")
       .collect();
+    
+    // Map to exclude embedding field
+    return docs.map(({ embedding, ...doc }) => doc);
   },
 });
 
@@ -76,7 +81,10 @@ export const get = query({
     if (!doc || doc.ownerId !== identity.subject) {
       return null;
     }
-    return doc;
+    
+    // Exclude the embedding field (too large for frontend)
+    const { embedding, ...docWithoutEmbedding } = doc;
+    return docWithoutEmbedding;
   },
 });
 
@@ -118,6 +126,45 @@ export const create = mutation({
       actionItems: args.actionItems,
       createdAt: Date.now(),
       ownerId: identity.subject,
+    });
+  },
+});
+
+/**
+ * Internal mutation for creating documentation from HTTP actions (agent API)
+ * Bypasses auth check since it's called from authenticated HTTP actions
+ */
+export const createForAgent = internalMutation({
+  args: {
+    meetingId: v.id("meetings"),
+    projectId: v.id("projects"),
+    content: v.string(),
+    embedding: v.array(v.float64()),
+    summary: v.optional(v.string()),
+    keyPoints: v.optional(v.array(v.string())),
+    actionItems: v.optional(
+      v.array(
+        v.object({
+          item: v.string(),
+          assignee: v.optional(v.string()),
+          dueDate: v.optional(v.number()),
+        })
+      )
+    ),
+    ownerId: v.string(),
+  },
+  returns: v.id("meetingDocumentation"),
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("meetingDocumentation", {
+      meetingId: args.meetingId,
+      projectId: args.projectId,
+      content: args.content,
+      embedding: args.embedding,
+      summary: args.summary,
+      keyPoints: args.keyPoints,
+      actionItems: args.actionItems,
+      createdAt: Date.now(),
+      ownerId: args.ownerId,
     });
   },
 });
