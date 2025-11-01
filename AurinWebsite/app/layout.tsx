@@ -18,7 +18,7 @@ const lora = Lora({
 });
 
 export const metadata: Metadata = {
-  title: "Recall PM",
+  title: "Aurin",
   description: "AI project manager for standups and meetings",
   icons: {
     icon: "/convex.svg",
