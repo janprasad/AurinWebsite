@@ -19,6 +19,14 @@ export default defineSchema({
       v.object({
         meetingType: v.optional(v.string()),
         additionalInstructions: v.optional(v.string()),
+        sharedEmails: v.optional(v.array(v.string())),
+        recurring: v.optional(
+          v.object({
+            enabled: v.boolean(),
+            frequency: v.union(v.literal("daily"), v.literal("weekly")),
+            startTime: v.optional(v.number()),
+          })
+        ),
       })
     ),
   })

@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useAction } from "convex/react";
-import { api } from "../../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";

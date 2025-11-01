@@ -1,23 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a; /* slate-900 */
+  /* Brand palette (earthy, refined) */
+  /* New palette from guide */
+  --color-accent: #A66C46; /* Camel Brown */
+  --color-primary: #3D5C71; /* Slate Blue */
+  --color-stone: #DBD0DF; /* Pebble Gray */
+  --color-ink: #273545; /* Midnight Navy */
+  --color-mist: #92AABE; /* Mist Blue */
+  --color-ivory: #f6f7f9; /* Soft neutral base */
+
+  /* Legacy alias mapping for existing usage */
+  --color-tea: var(--color-stone);
+  --color-vanilla: var(--color-accent);
+
+  --background: var(--color-ivory);
+  --foreground: var(--color-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
 }
 
 /* Enforce light theme */
 body {
   color: var(--foreground);
-  background: var(--background);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI,
+  background:
+    radial-gradient(1200px 600px at -10% -10%, #92AABE33 0%, transparent 60%),
+    radial-gradient(900px 500px at 110% 0%, #DBD0DF55 0%, transparent 60%),
+    var(--background);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI,
     Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Display font for headings */
+h1, h2, h3 {
+  font-family: var(--font-display), var(--font-sans), ui-sans-serif, system-ui;
 }
 
 /* Nicer defaults */

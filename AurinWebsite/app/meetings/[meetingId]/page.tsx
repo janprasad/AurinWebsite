@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
@@ -56,7 +56,7 @@ export default function MeetingPage() {
         ← Back to Project
       </Link>
 
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700 mb-6">
+      <div className="bg-white p-6 rounded-lg border border-slate-200 mb-6">
         <div className="flex justify-between items-start mb-4">
           <div>
             <h1 className="text-3xl font-bold mb-2">{meeting.name}</h1>
@@ -93,7 +93,7 @@ export default function MeetingPage() {
             onChange={(e) =>
               handleStatusChange(e.target.value as typeof meeting.status)
             }
-            className="px-3 py-1 border rounded-md dark:bg-slate-700 dark:border-slate-600"
+            className="px-3 py-1 border rounded-md bg-white border-slate-300"
           >
             <option value="scheduled">Scheduled</option>
             <option value="in_progress">In Progress</option>
@@ -104,7 +104,7 @@ export default function MeetingPage() {
       </div>
 
       {meetingDoc && (
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700 mb-6">
+        <div className="bg-white p-6 rounded-lg border border-slate-200 mb-6">
           <h2 className="text-2xl font-semibold mb-4">Documentation</h2>
           {meetingDoc.summary && (
             <div className="mb-4">

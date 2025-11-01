@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
@@ -13,7 +13,12 @@ export default function ProjectPage() {
   const project = useQuery(api.projects.get, { projectId: projectId as any });
   const bots = useQuery(api.bots.list, { projectId: projectId as any }) ?? [];
   const meetings = useQuery(api.meetings.list, { projectId: projectId as any }) ?? [];
-  const docs = useQuery(api.documentation.list, { projectId: projectId as any }) ?? [];
+  const docs =
+    useQuery(
+      api.documentation.list,
+      // Skip docs query if project is not available (deleted/unauthorized)
+      project ? { projectId: projectId as any } : "skip"
+    ) ?? [];
   const deleteProject = useMutation(api.projects.remove);
 
   const [showCreateBot, setShowCreateBot] = useState(false);
@@ -72,7 +77,7 @@ export default function ProjectPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Bots Section */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div className="bg-white p-6 rounded-lg border border-slate-200">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Recall Bots</h2>
             <button
@@ -84,24 +89,24 @@ export default function ProjectPage() {
           </div>
 
           {showCreateBot && (
-            <div className="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg mb-4">
+            <div className="bg-slate-50 p-4 rounded-lg mb-4 border border-slate-200">
               <input
                 type="text"
                 placeholder="Bot name"
                 value={botName}
                 onChange={(e) => setBotName(e.target.value)}
-                className="w-full px-4 py-2 border rounded-md dark:bg-slate-600 dark:border-slate-500 mb-2"
+                className="w-full px-4 py-2 border rounded-md bg-white border-slate-300 mb-2"
               />
               <textarea
                 placeholder="Description (optional)"
                 value={botDescription}
                 onChange={(e) => setBotDescription(e.target.value)}
-                className="w-full px-4 py-2 border rounded-md dark:bg-slate-600 dark:border-slate-500 mb-2"
+                className="w-full px-4 py-2 border rounded-md bg-white border-slate-300 mb-2"
                 rows={2}
               />
               <button
                 onClick={handleCreateBot}
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors w-full"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors w-full"
               >
                 Create Bot
               </button>
@@ -133,12 +138,12 @@ export default function ProjectPage() {
         </div>
 
         {/* Meetings Section */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
+        <div className="bg-white p-6 rounded-lg border border-slate-200">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Meetings</h2>
             <Link
               href={`/meetings/new?projectId=${projectId}`}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
+              className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-full hover:brightness-95 transition-colors text-sm"
             >
               + New Meeting
             </Link>
@@ -171,7 +176,7 @@ export default function ProjectPage() {
       </div>
 
       {/* Documentation Section */}
-      <div className="mt-8 bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
+      <div className="mt-8 bg-white p-6 rounded-lg border border-slate-200">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Meeting Documentation</h2>
           <Link

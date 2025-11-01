@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
@@ -52,7 +52,7 @@ export default function NewMeetingPage() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md dark:bg-slate-700 dark:border-slate-600"
+            className="w-full px-4 py-2 border rounded-md bg-white border-slate-300"
             required
           />
         </div>
@@ -65,7 +65,7 @@ export default function NewMeetingPage() {
               setProjectId(e.target.value);
               setBotId(""); // Reset bot selection when project changes
             }}
-            className="w-full px-4 py-2 border rounded-md dark:bg-slate-700 dark:border-slate-600"
+            className="w-full px-4 py-2 border rounded-md bg-white border-slate-300"
             required
           >
             <option value="">Select a project</option>
@@ -82,7 +82,7 @@ export default function NewMeetingPage() {
           <select
             value={botId}
             onChange={(e) => setBotId(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md dark:bg-slate-700 dark:border-slate-600"
+            className="w-full px-4 py-2 border rounded-md bg-white border-slate-300"
             required
             disabled={!projectId}
           >
@@ -105,14 +105,14 @@ export default function NewMeetingPage() {
             type="datetime-local"
             value={scheduledTime}
             onChange={(e) => setScheduledTime(e.target.value)}
-            className="w-full px-4 py-2 border rounded-md dark:bg-slate-700 dark:border-slate-600"
+            className="w-full px-4 py-2 border rounded-md bg-white border-slate-300"
           />
         </div>
 
         <div className="flex gap-4">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="bg-[var(--color-primary)] text-white px-6 py-2 rounded-full hover:brightness-95 transition-colors"
           >
             Create Meeting
           </button>

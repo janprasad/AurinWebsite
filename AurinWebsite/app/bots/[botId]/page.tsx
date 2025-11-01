@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+import { api } from "@/convex/_generated/api";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
@@ -61,7 +61,7 @@ export default function BotPage() {
         ← Back to Project
       </Link>
 
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700 mb-6">
+      <div className="bg-white p-6 rounded-lg border border-slate-200 mb-6">
         <div className="flex justify-between items-start mb-4">
           {isEditing ? (
             <div className="flex-1">
@@ -69,12 +69,12 @@ export default function BotPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="text-3xl font-bold w-full px-2 py-1 border rounded-md dark:bg-slate-700 dark:border-slate-600 mb-2"
+                className="text-3xl font-bold w-full px-2 py-1 border rounded-md bg-white border-slate-300 mb-2"
               />
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-2 py-1 border rounded-md dark:bg-slate-700 dark:border-slate-600"
+                className="w-full px-2 py-1 border rounded-md bg-white border-slate-300"
                 rows={3}
               />
             </div>
@@ -91,7 +91,7 @@ export default function BotPage() {
               <>
                 <button
                   onClick={handleUpdate}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                  className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-full hover:brightness-95 transition-colors"
                 >
                   Save
                 </button>
@@ -106,7 +106,7 @@ export default function BotPage() {
               <>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                  className="bg-[var(--color-primary)] text-white px-4 py-2 rounded-full hover:brightness-95 transition-colors"
                 >
                   Edit
                 </button>
@@ -122,7 +122,7 @@ export default function BotPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700">
+      <div className="bg-white p-6 rounded-lg border border-slate-200">
         <h2 className="text-2xl font-semibold mb-4">Assigned Meetings</h2>
         {botMeetings.length === 0 ? (
           <p className="text-gray-500 dark:text-gray-400 text-sm">
