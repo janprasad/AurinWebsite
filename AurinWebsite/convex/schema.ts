@@ -66,12 +66,18 @@ export default defineSchema({
         })
       )
     ),
+    embedding: v.array(v.float64()), // Vector embedding for semantic search
     createdAt: v.number(),
     ownerId: v.string(), // Clerk user ID
   })
     .index("by_meeting", ["meetingId"])
     .index("by_project", ["projectId"])
-    .index("by_owner", ["ownerId"]),
+    .index("by_owner", ["ownerId"])
+    .vectorIndex("by_embedding", {
+      vectorField: "embedding",
+      dimensions: 1536, // OpenAI text-embedding-3-small
+      filterFields: ["projectId"], // Multi-tenant filtering
+    }),
 
   integrations: defineTable({
     userId: v.string(), // Clerk user ID

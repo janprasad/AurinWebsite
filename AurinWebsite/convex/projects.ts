@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 
@@ -112,4 +112,24 @@ export const remove = mutation({
   },
 });
 
+/**
+ * Internal query for fetching projects from HTTP actions (agent API)
+ * Bypasses auth check since it's called from authenticated HTTP actions
+ */
+export const getProjectForAgent = internalQuery({
+  args: { projectId: v.id("projects") },
+  returns: v.union(
+    v.object({
+      _id: v.id("projects"),
+      _creationTime: v.number(),
+      name: v.string(),
+      description: v.optional(v.string()),
+      ownerId: v.string(),
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.projectId);
+  },
+});
 

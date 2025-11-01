@@ -10,6 +10,8 @@
 
 import type * as bots from "../bots.js";
 import type * as documentation from "../documentation.js";
+import type * as documentationSearch from "../documentationSearch.js";
+import type * as http from "../http.js";
 import type * as integrations from "../integrations.js";
 import type * as meetings from "../meetings.js";
 import type * as myFunctions from "../myFunctions.js";
@@ -32,6 +34,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   bots: typeof bots;
   documentation: typeof documentation;
+  documentationSearch: typeof documentationSearch;
+  http: typeof http;
   integrations: typeof integrations;
   meetings: typeof meetings;
   myFunctions: typeof myFunctions;

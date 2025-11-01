@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const list = query({
@@ -101,6 +101,31 @@ export const create = mutation({
       scheduledTime: args.scheduledTime,
       status: "scheduled",
       ownerId: identity.subject,
+    });
+  },
+});
+
+/**
+ * Internal mutation for creating meetings from HTTP actions (agent API)
+ * Bypasses auth check since it's called from authenticated HTTP actions
+ */
+export const createForAgent = internalMutation({
+  args: {
+    name: v.string(),
+    projectId: v.id("projects"),
+    botId: v.id("recallBots"),
+    ownerId: v.string(),
+    scheduledTime: v.optional(v.number()),
+  },
+  returns: v.id("meetings"),
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("meetings", {
+      name: args.name,
+      projectId: args.projectId,
+      botId: args.botId,
+      scheduledTime: args.scheduledTime,
+      status: "scheduled",
+      ownerId: args.ownerId,
     });
   },
 });

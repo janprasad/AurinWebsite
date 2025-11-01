@@ -10,11 +10,12 @@ export default function DocumentationPage() {
   const params = useParams();
   const projectId = params.projectId as string;
   const docs = useQuery(api.documentation.list, { projectId: projectId as any }) ?? [];
-  const searchDocs = useAction(api.documentation.search);
+  const searchDocs = useAction(api.documentationSearch.search);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<
     Array<{
       _id: string;
+      meetingId: string;
       content: string;
       summary?: string;
       keyPoints?: string[];
@@ -24,7 +25,7 @@ export default function DocumentationPage() {
         dueDate?: number;
       }>;
       createdAt: number;
-      relevanceScore?: number;
+      relevanceScore: number;
     }>
   >([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -36,9 +37,24 @@ export default function DocumentationPage() {
     }
     setIsSearching(true);
     try {
+      // Generate embedding client-side
+      const response = await fetch("/api/embeddings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: searchQuery }),
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to generate embedding");
+      }
+      
+      const { embedding } = await response.json();
+      
+      // Search with the embedding
       const results = await searchDocs({
         projectId: projectId as any,
-        query: searchQuery,
+        queryEmbedding: embedding,
+        limit: 10,
       });
       setSearchResults(results);
     } catch (error) {
@@ -125,7 +141,7 @@ export default function DocumentationPage() {
                   <h3 className="text-xl font-semibold mb-2">
                     Documentation from {new Date(doc.createdAt).toLocaleDateString()}
                   </h3>
-                  {doc.relevanceScore !== undefined && (
+                  {searchQuery && doc.relevanceScore !== undefined && (
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       Relevance: {(doc.relevanceScore * 100).toFixed(1)}%
                     </p>
